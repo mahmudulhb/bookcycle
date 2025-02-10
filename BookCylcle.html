@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookCycle - বই পুনর্ব্যবহার ও বিনিময় প্ল্যাটফর্ম</title>
+    <link rel="icon" type="image/png" href="output-onlinepngtools (3).png">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E7D32;
+            --secondary-color: #81C784;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Section Common Styles */
+        section {
+            padding: 6rem 2rem 2rem;
+            min-height: 100vh;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        #home {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('12.jpg') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .donation-form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Image Upload Styles */
+        .upload-area {
+            border: 2px dashed #81C784;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .upload-instruction {
+            color: #666;
+            margin: 1rem 0;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        #bookPhotos {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        /* Book Grid Styles */
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .book-image img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .book-details {
+            padding: 1.5rem;
+        }
+
+        .book-price {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .contact-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Error Handling */
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .input-error {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220,53,69,0.1) !important;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--primary-color);
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            text-align: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+        }
+
+        /* Admin Section */
+        .admin-section {
+            display: none;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+        .admin-section h2 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+        .admin-section .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .admin-section .btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Latest Books Section in Admin */
+        .latest-books {
+            margin-top: 2rem;
+        }
+
+        .latest-books h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .latest-books .book-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .latest-books .book-card button {
+            background: #dc3545;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-contact" onclick="scrollToContact()">📞</div>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <div class="logo" id="logo"><a href="#home"><img src="bookcycle.c.png" alt="BookCycle" style="width: 140px; height: auto;"></a></div>
+                <button class="mobile-menu-btn">☰</button>
+                <ul class="nav-links">
+                    <li><a href="#home">হোম</a></li>
+                    <li><a href="#donate">বই দান/বিক্রয়</a></li>
+                    <li><a href="#books">বইসমূহ</a></li>
+                    <li><a href="#about">আমাদের কথা</a></li>
+                    <li><a href="#contact">যোগাযোগ</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section id="home">
+        <div class="hero-content">
+            <h1>বই হোক সবার জন্য</h1>
+            <p>আপনার পড়া বইগুলোকে নতুন জীবন দিন! অপ্রয়োজনীয় বই ফেলে না দিয়ে বিনামূল্যে বিতরণ করুন বা সহজে বিক্রি করুন। অন্যদের মাঝে জ্ঞান ছড়িয়ে দেওয়ার পাশাপাশি আপনার সংগ্রহে যোগ করুন নতুন বই—সাশ্রয়ী মূল্যে!</p>
+        </div>
+    </section>
+
+    <section id="donate">
+        <h2 class="section-title">বই দান/বিক্রয় ফর্ম</h2>
+        <form class="donation-form" id="donationForm" enctype="multipart/form-data">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="bookName">বইয়ের নাম:</label>
+                    <input type="text" id="bookName" class="form-control" required>
+                    <div class="error-message" id="bookNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="author">লেখক/সম্পাদক:</label>
+                    <input type="text" id="author" class="form-control" required>
+                    <div class="error-message" id="authorError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="publication">প্রকাশনা:</label>
+                    <input type="text" id="publication" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="condition">বইয়ের অবস্থা:</label>
+                    <select id="condition" class="form-control" required>
+                        <option value="new">নতুন</option>
+                        <option value="good">ভাল</option>
+                        <option value="average">মধ্যম</option>
+                        <option value="poor">খারাপ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="transactionType">লেনদেনের ধরন:</label>
+                <select id="transactionType" class="form-control" required onchange="toggleSellFields()">
+                    <option value="donate">বিনামূল্যে দান</option>
+                    <option value="sell">বিক্রয়</option>
+                </select>
+            </div>
+
+            <div id="sellFields" style="display:none;">
+                <div class="form-group">
+                    <div class="info-box">
+                        <p>📌 দাম নির্ধারণের জন্য বইয়ের গায়ের মূল্য ট্যাগ এবং প্রকাশনা বছরের ছবি আপলোড করুন</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="priceTag">মূল্য ট্যাগের ছবি:</label>
+                    <input type="file" id="priceTag" accept="image/*" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="publishYear">প্রকাশনা বছর:</label>
+                    <input type="number" id="publishYear" min="1900" max="2024" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="name">আপনার নাম:</label>
+                    <input type="text" id="name" class="form-control" required>
+                    <div class="error-message" id="nameError"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">ইমেইল:</label>
+                    <input type="email" id="email" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp নম্বর:</label>
+                    <input type="tel" id="whatsapp" class="form-control" 
+                           pattern="[+]{0,1}[0-9]{11,14}" 
+                           placeholder="+8801XXXXXXXXX" required>
+                    <div class="error-message" id="whatsappError"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="bookPhotos">বইয়ের ছবি আপলোড করুন (সর্বোচ্চ ৩টি):</label>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="bookPhotos" accept="image/*" multiple 
+                           class="form-control" required
+                           onchange="previewImages(event)">
+                    <div class="upload-instruction">
+                        <span class="upload-icon">📷</span>
+                        <p>কভার পেজ এবং গুরুত্বপূর্ণ পৃষ্ঠার ছবি আপলোড করুন</p>
+                    </div>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                <div class="error-message" id="photoError"></div>
+            </div>
+
+            <button type="submit" class="btn btn-gradient">জমা দিন</button>
+            <div class="loading-spinner" style="display: none;"></div>
+        </form>
+    </section>
+
+    <section id="books">
+        <h2 class="section-title">সর্বশেষ বইসমূহ</h2>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="বইয়ের নাম অনুসন্ধান করুন..." oninput="filterBooks()">
+        </div>
+        <div class="book-grid" id="bookGrid">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+    </section>
+
+    <section id="about">
+        <h2 class="section-title">আমাদের কথা</h2>
+        <div class="about-content">
+            <h3>কেন BookCycle বেছে নেবেন?</h3>
+            <p>🔄 বই বিনিময়: পুরোনো বই বিক্রি বা দান করে জায়গা তৈরি করুন নতুন বইয়ের জন্য।<br>
+                💸 সাশ্রয়ী কেনাকাটা: হালনাগাদ বই কিনুন কম খরচে, পেয়ে যান এক্সক্লুসিভ অফার!<br>
+                🌱 পরিবেশ বাঁচান: বই পুনর্ব্যবহারে কাগজের অপচয় রোধ করুন, গড়ে তুলুন টেকসই ভবিষ্যৎ।<br>
+                🤝 সামাজিক উদ্যোগ: অসচ্ছল শিক্ষার্থীদের বই দান করে তাদের শিক্ষার আলো ছড়িয়ে দিন।</p><br><br>
+                <h3> বই বিনিময় ও সংগ্রহে সহজ সমাধান</h3>
+                
+📚 অনাবশ্যক বই ফেলবেন না: পড়া শেষ করা বইগুলো ফেলে না দিয়ে অন্যকে বিনামূল্যে দিন বা যুক্তিসঙ্গত মূল্যে বিক্রি করুন। এতে অন্যদের শিক্ষার সুযোগ তৈরি হবে, আর আপনার সংগ্রহেও জায়গা হবে নতুন বইয়ের জন্য।<br>
+💡 জ্ঞান ছড়িয়ে দিন: বই বিতরণ বা বিক্রির মাধ্যমে সমাজে জ্ঞানের প্রসার ঘটান। পুরোনো বই আপনার জন্য অপ্রয়োজনীয় হলেও অন্য কারও জন্য হতে পারে স্বপ্নপূরণের হাতিয়ার।<br>
+🛒 নতুন বই কিনুন সাশ্রয়ী মূল্যে: হালনাগাদ ও জনপ্রিয় সব বই সংগ্রহ করুন সহজলভ্য দামে। শিক্ষা, উপন্যাস, গবেষণা—যেকোনো বিষয়ের বই পাবেন অর্থ সাশ্রয়ের নিশ্চয়তা সহকারে।<br>
+🌟 সুযোগের সর্বোচ্চ ব্যবহার: বই বিক্রি বা দান করে নিজের তাক পরিষ্কার করুন, আবার নতুন বই কিনে জ্ঞানের ভাণ্ডার সমৃদ্ধ করুন।<br><br>
+<h3>কেন এটি গুরুত্বপূর্ণ?</h3>
+
+পরিবেশ বান্ধব সমাধান: বই পুনর্ব্যবহারে কাগজের অপচয় রোধ হয়।<br>
+সামাজিক দায়বদ্ধতা: অসচ্ছল শিক্ষার্থীদের জন্য বই উপহার দেওয়া মানে তাদের ভবিষ্যৎ গড়ে দেওয়া।<br>
+সাশ্রয়ী পড়ার অভ্যাস: কম খরচে নতুন বই কেনা সম্ভব হলে জ্ঞানের চর্চা বাড়বে সকলের মধ্যে।<br><br>
+<h4>আজই শুরু করুন!</h4>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title">যোগাযোগ</h2>
+        <div class="contact-info">
+            <div class="contact-card">
+                <h3>ঠিকানা</h3>
+                <p>১২৩ বই সরণি, ঢাকা</p>
+            </div>
+            <div class="contact-card">
+                <h3>ইমেইল</h3>
+                <p>contact@bookcycle.com</p>
+            </div>
+            <div class="contact-card">
+                <h3>ফোন</h3>
+                <p>+৮৮০ ১৭১২-৩৪৫৬৭৮</p>
+            </div>
+        </div>
+        <button id="adminEntryButton" class="btn">অ্যাডমিন প্যানেলে প্রবেশ করুন</button>
+    </section>
+
+    <section class="admin-section" id="adminSection">
+        <div class="admin-header">
+            <h2>📚 BookCycle অ্যাডমিন প্যানেল</h2>
+            <div class="stats-card">
+                <div>
+                    <h4>মোট বই</h4>
+                    <p id="totalBooks">0</p>
+                </div>
+                <div>
+                    <h4>অপেক্ষারত বই</h4>
+                    <p id="pendingBooks">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-functions">
+            <div class="admin-card pending-books">
+                <h3>অনুমোদনের জন্য বইসমূহ</h3>
+                <div id="pendingBooksContainer"></div>
+            </div>
+
+            <div class="admin-card">
+                <h3>বই ব্যবস্থাপনা</h3>
+                <div class="form-group">
+                    <label for="searchBook">বই খুঁজুন:</label>
+                    <input type="text" id="searchBook" class="form-control" 
+                           placeholder="বইয়ের নাম বা লেখক লিখুন..." oninput="searchAdminBooks()">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookPrice">মূল্য নির্ধারণ:</label>
+                    <div class="input-group">
+                        <input type="number" id="bookPrice" class="form-control" placeholder="৳">
+                        <button class="btn" onclick="setSelectedBookPrice()">সেট করুন</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="deleteBook">বই মুছুন:</label>
+                    <div class="input-group">
+                        <select id="bookList" class="form-control"></select>
+                        <button class="btn btn-danger" onclick="deleteSelectedBook()">মুছুন</button>
+                    </div>
+                </div>
+
+                <h4 style="margin-top: 2rem;">সিস্টেম সেটিংস</h4>
+                <button class="btn" onclick="exportData()">ডেটা এক্সপোর্ট</button>
+                <button class="btn" onclick="importData()">ডেটা ইম্পোর্ট</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <button id="exitAdmin" class="btn btn-danger">প্যানেল বন্ধ করুন</button>
+        </div>
+    </section>
+
+    <script>
+        // Mobile Menu Handling
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        const loadingSpinner = document.querySelector('.loading-spinner');
+        let booksData = JSON.parse(localStorage.getItem('booksData')) || [];
+        let submittedBooks = JSON.parse(localStorage.getItem('submittedBooks')) || [];
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Event Listeners
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            document.addEventListener('click', closeMobileMenu);
+            document.getElementById('donationForm').addEventListener('submit', handleDonationSubmit);
+            document.getElementById('adminEntryButton').addEventListener('click', showAdminSection);
+            
+            // Initial Setup
+            updateBooksDisplay();
+            toggleSellFields();
+        });
+
+        function toggleMobileMenu(e) {
+            e.stopPropagation();
+            navLinks.classList.toggle('active');
+        }
+
+        function closeMobileMenu(e) {
+            if (!e.target.closest('.nav-container')) {
+                navLinks.classList.remove('active');
+            }
+        }
+
+        // Form Handling
+        async function handleDonationSubmit(e) {
+            e.preventDefault();
+            loadingSpinner.style.display = 'block';
+
+            if (!validateDonationForm()) {
+                loadingSpinner.style.display = 'none';
+                return;
+            }
+
+            const formData = await prepareFormData();
+            submittedBooks.push(formData);
+            localStorage.setItem('submittedBooks', JSON.stringify(submittedBooks));
+            
+            resetForm();
+            loadingSpinner.style.display = 'none';
+            alert("বইটি সফলভাবে জমা হয়েছে! অ্যাডমিন প্যানেলে যাচাই করুন।");
+        }
+
+        async function prepareFormData() {
+            const photos = await Promise.all(
+                Array.from(document.getElementById('bookPhotos').files)
+                    .slice(0, 3)
+                    .map(convertToDataURL)
+            );
+
+            return {
+                bookName: document.getElementById('bookName').value.trim(),
+                author: document.getElementById('author').value.trim(),
+                publication: document.getElementById('publication').value.trim(),
+                condition: document.getElementById('condition').value,
+                transactionType: document.getElementById('transactionType').value,
+                contact: document.getElementById('whatsapp').value.trim(),
+                photos: photos,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        function convertToDataURL(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Validation Functions
+        function validateDonationForm() {
+            let isValid = true;
+            resetErrors();
+
+            // Book Name Validation
+            const bookName = document.getElementById('bookName');
+            if (!bookName.value.trim()) {
+                showError(bookName, 'বইয়ের নাম আবশ্যক');
+                isValid = false;
+            }
+
+            // WhatsApp Validation
+            const whatsapp = document.getElementById('whatsapp');
+            const whatsappRegex = /^(\+88)?01[3-9]\d{8}$/;
+            if (!whatsappRegex.test(whatsapp.value)) {
+                showError(whatsapp, 'সঠিক WhatsApp নম্বর দিন');
+                isValid = false;
+            }
+
+            // Photo Validation
+            const photos = document.getElementById('bookPhotos').files;
+            if (photos.length === 0) {
+                showError(document.getElementById('bookPhotos'), 'অন্তত একটি ছবি আপলোড করুন');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function showError(input, message) {
+            const errorElement = document.getElementById(`${input.id}Error`);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                input.classList.add('input-error');
+            }
+        }
+
+        function resetErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('.form-control').forEach(el => {
+                el.classList.remove('input-error');
+            });
+        }
+
+        function resetForm() {
+            document.getElementById('donationForm').reset();
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('bookPhotos').value = '';
+            toggleSellFields();
+        }
+
+        function toggleSellFields() {
+            const transactionType = document.getElementById('transactionType').value;
+            document.getElementById('sellFields').style.display = 
+                transactionType === 'sell' ? 'block' : 'none';
+        }
+
+        function filterBooks() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const bookGrid = document.getElementById('bookGrid');
+            bookGrid.innerHTML = ''; // Clear current display
+
+            const filteredBooks = booksData.filter(book => 
+                book.bookName.toLowerCase().includes(searchInput)
+            );
+
+            filteredBooks.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <div class="book-image">
+                        <img src="${book.photos[0]}" alt="${book.bookName}">
+                    </div>
+                    <div class="book-details">
+                        <h3>${book.bookName}</h3>
+                        <p>লেখক/সম্পাদক: ${book.author}</p>
+                        <p>অবস্থা: ${book.condition}</p>
+                        ${book.transactionType === 'sell' ? 
+                            `<p class="book-price">মূল্য: ৳${book.price}</p>` : 
+                            '<p class="book-price">বিনামূল্যে</p>'}
+                        <p class="contact-info">যোগাযোগ: ${book.contact}</p>
+                        <small>প্রকাশিত: ${new Date(book.timestamp).toLocaleDateString('bn-BD')}</small>
+                    </div>
+                `;
+                bookGrid.appendChild(bookCard);
+            });
+        }
+
+        function showAdminSection() {
+            const adminCode = prompt("সিক্রেট কোড প্রবেশ করুন:");
+            if (adminCode === "BookCycle@2025@mahmud") {
+                document.getElementById('adminSection').style.display = 'block';
+                updateAdminStats();
+                loadPendingBooks();
+                populateBookList();
+                document.documentElement.scrollTop = 0;
+            } else {
+                alert("ভুল সিক্রেট কোড!");
+            }
+        }
+
+        function updateAdminStats() {
+            document.getElementById('totalBooks').textContent = booksData.length;
+            document.getElementById('pendingBooks').textContent = submittedBooks.length;
+        }
+
+        function loadPendingBooks() {
+            const container = document.getElementById('pendingBooksContainer');
+            container.innerHTML = submittedBooks.map((book, index) => `
+                <div class="pending-book-card">
+                    <div class="pending-book-images">
+                        ${book.photos.slice(0,3).map(img => `
+                            <img src="${img}" alt="Book Preview">
+                        `).join('')}
+                    </div>
+                    <div>
+                        <h4>${book.bookName}</h4>
+                        <p>লেখক: ${book.author}</p>
+                        <p>যোগাযোগ: ${book.contact}</p>
+                        <div class="book-actions">
+                            <button class="btn" onclick="approveBook(${index})">অনুমোদন দিন</button>
+                            <button class="btn btn-danger" onclick="rejectBook(${index})">বাতিল করুন</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || '<p>কোন অপেক্ষারত বই নেই</p>';
+        }
+
+        function approveBook(index) {
+            const price = prompt("বইয়ের মূল্য প্রবেশ করুন (বিনামূল্যের জন্য 0 লিখুন):");
+            if (price === null) return;
+            
+            if (!isNaN(price) && price >= 0) {
+                const completeBook = {
+                    ...submittedBooks[index],
+                    price: parseInt(price),
+                    approved: true
+                };
+                
+                booksData.unshift(completeBook);
+                submittedBooks.splice(index, 1);
+                localStorage.setItem('booksData', JSON.stringify(booksData));
+                localStorage.setItem('submittedBooks', JSON.stringify(submittedBooks));
+                updateAdminStats();
+                loadPendingBooks();
+                alert("বইটি অনুমোদিত হয়েছে!");
+            } else {
+                alert("অবৈধ মূল্য!");
+            }
+        }
+
+        function rejectBook(index) {
+            if (confirm("এই বইটি বাতিল করতে চান?")) {
+                submittedBooks.splice(index, 1);
+                localStorage.setItem('submittedBooks', JSON.stringify(submittedBooks));
+                loadPendingBooks();
+                updateAdminStats();
+                alert("বইটি বাতিল হয়েছে!");
+            }
+        }
+
+        function populateBookList() {
+            const select = document.getElementById('bookList');
+            select.innerHTML = booksData.map(book => `
+                <option value="${book.bookName}">${book.bookName} - ${book.author}</option>
+            `).join('');
+        }
+
+        function deleteSelectedBook() {
+            const bookName = document.getElementById('bookList').value;
+            if (confirm(`"${bookName}" মুছতে চান?`)) {
+                booksData = booksData.filter(book => book.bookName !== bookName);
+                localStorage.setItem('booksData', JSON.stringify(booksData));
+                populateBookList();
+                alert("বইটি মুছে ফেলা হয়েছে!");
+            }
+        }
+
+        function exportData() {
+            const data = JSON.stringify(booksData);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bookcycle-data.json';
+            a.click();
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = () => {
+                    booksData = JSON.parse(reader.result);
+                    localStorage.setItem('booksData', JSON.stringify(booksData));
+                    alert("ডেটা সফলভাবে ইম্পোর্ট হয়েছে!");
+                    populateBookList();
+                    updateAdminStats();
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Update the exit admin button
+        document.getElementById('exitAdmin').addEventListener('click', () => {
+            document.getElementById('adminSection').style.display = 'none';
+        });
+
+        function scrollToContact() {
+            document.getElementById('contact').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    </script>
+</body>
+</html>
